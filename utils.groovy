@@ -62,7 +62,9 @@ def nix_build(String flakeref, String subdir=null) {
     // Store the build start time to job's environment
     epoch_seconds = (int) (new Date().getTime() / 1000l)
     env."BEG_${flakeref_trimmed}_${env.BUILD_TAG}" = epoch_seconds
-    sh "nix build ${flakeref} ${opts}"
+    def spath = sh (script: "nix build ${flakeref} ${opts}", returnStdout: true)
+    print "ABCDEFG"
+    print spath
     // Store the build end time to job's environment
     epoch_seconds = (int) (new Date().getTime() / 1000l)
     env."END_${flakeref_trimmed}_${env.BUILD_TAG}" = epoch_seconds
