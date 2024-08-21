@@ -62,7 +62,7 @@ def nix_build(String flakeref, String subdir=null) {
     // Store the build start time to job's environment
     epoch_seconds = (int) (new Date().getTime() / 1000l)
     env."BEG_${flakeref_trimmed}_${env.BUILD_TAG}" = epoch_seconds
-    def spath = sh (script: "nix build ${flakeref} ${opts}", returnStdout: true)
+    def spath = sh (script: "nix build ${flakeref} ${opts}", returnStdout: true).trim()
     println "ABCDEFG"
     println "SPATH: ${spath}"
     sh (script: "nix run github:tiiuae/ci-yubi#sign -- --path=${spath} --cert=INT-lenovo-x1-carbon-gen11-debug-x86-64-linux --sigfile=mysig.bin")
