@@ -152,9 +152,15 @@ def find_img_relpath(String flakeref, String subdir) {
 
 def sign_relpath(String flakeref, String subdir) {
   relpath=find_img_relpath(${flakeref}, ${subdir})
-  sh(
-    script: "nix run github:tiiuae/ci-yubi#sign -- --path=${spath} --cert=INT-lenovo-x1-carbon-gen11-debug-x86-64-linux --sigfile=${relpath}.sig"
-    )
+  res = sh(
+    script: """
+      cd ${subdir} && \
+      nix run github:tiiuae/ci-yubi#sign -- --path=${relpath} --cert=INT-lenovo-x1-carbon-gen11-debug-x86-64-linux --sigfile=${relpath}.sig
+    """, returnStdout: true).trim()
+//  sh(
+//    script: "cd ${subdir} && nix run github:tiiuae/ci-yubi#sign -- --path=${spath} --cert=INT-lenovo-x1-carbon-gen11-debug-x86-64-linux --sigfile=${relpath}.sig"
+//    )
+  return res
 }
 
 def boot_test(String flakeref, String device_config, String jenkins_url, String subdir='archive') {
