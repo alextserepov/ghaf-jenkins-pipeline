@@ -151,7 +151,7 @@ def find_img_relpath(String flakeref, String subdir) {
 }
 
 def sign_relpath(String flakeref, String subdir) {
-  relpath=find_img_relpath(${flakeref}, ${subdir})
+  relpath = find_img_relpath(flakeref, subdir)
   res = sh(
     script: """
       cd ${subdir} && \
