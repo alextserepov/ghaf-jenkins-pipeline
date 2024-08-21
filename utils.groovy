@@ -154,8 +154,7 @@ def sign_relpath(String flakeref, String subdir) {
   relpath = find_img_relpath(flakeref, subdir)
   res = sh(
     script: """
-      cd ${subdir} && \
-      nix run github:tiiuae/ci-yubi#sign -- --path=${relpath} --cert=INT-lenovo-x1-carbon-gen11-debug-x86-64-linux --sigfile=${relpath}.sig
+      nix run github:tiiuae/ci-yubi#sign -- --path=${subdir}/${relpath} --cert=INT-lenovo-x1-carbon-gen11-debug-x86-64-linux --sigfile=${relpath}.sig
     """, returnStdout: true).trim()
 //  sh(
 //    script: "cd ${subdir} && nix run github:tiiuae/ci-yubi#sign -- --path=${spath} --cert=INT-lenovo-x1-carbon-gen11-debug-x86-64-linux --sigfile=${relpath}.sig"
