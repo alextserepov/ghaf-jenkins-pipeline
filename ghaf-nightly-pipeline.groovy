@@ -71,7 +71,9 @@ pipeline {
         dir(WORKDIR) {
 	  script {
 	    utils.find_img_relpath('.#packages.x86_64-linux.nvidia-jetson-orin-agx-debug-from-x86_64', 'archive')
-	    utils.find_img_relpath('..#packages.x86_64-linux.nvidia-jetson-orin-nx-debug-from-x86_64', 'archive')
+	    utils.sign_relpath('.#packages.x86_64-linux.nvidia-jetson-orin-agx-debug-from-x86_64', 'archive')
+	    utils.find_img_relpath('.#packages.x86_64-linux.nvidia-jetson-orin-nx-debug-from-x86_64', 'archive')
+	    utils.sign_relpath('.#packages.x86_64-linux.nvidia-jetson-orin-nx-debug-from-x86_64', 'archive')
 	  }
 	}
       }

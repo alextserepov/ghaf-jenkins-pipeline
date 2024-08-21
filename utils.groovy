@@ -63,7 +63,6 @@ def nix_build(String flakeref, String subdir=null) {
     epoch_seconds = (int) (new Date().getTime() / 1000l)
     env."BEG_${flakeref_trimmed}_${env.BUILD_TAG}" = epoch_seconds
     def spath = sh (script: "nix build ${flakeref} ${opts}", returnStdout: true).trim()
-    println "ABCDEFG"
     println "SPATH: ${spath}"
     sh (script: "nix run github:tiiuae/ci-yubi#sign -- --path=${spath} --cert=INT-lenovo-x1-carbon-gen11-debug-x86-64-linux --sigfile=mysig.bin")
     println "SPath Signed!"
@@ -149,6 +148,13 @@ def find_img_relpath(String flakeref, String subdir) {
     println "Found flakeref '${flakeref}' image '${img_relpath}'"
   }
   return img_relpath
+}
+
+def sign_relpath(String flakeref, String subdir) {
+  relpath=find_img_relpath(${flakeref}, ${subdir})
+  sh(
+    script: "nix run github:tiiuae/ci-yubi#sign -- --path=${spath} --cert=INT-lenovo-x1-carbon-gen11-debug-x86-64-linux --sigfile=${relpath}.sig"
+    )
 }
 
 def boot_test(String flakeref, String device_config, String jenkins_url, String subdir='archive') {
