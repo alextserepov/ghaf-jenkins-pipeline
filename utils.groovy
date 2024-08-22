@@ -111,6 +111,11 @@ def provenance(String flakeref, String outdir, String flakeref_trimmed) {
     """
     opts = "--recursive --out ${outdir}/provenance.json"
     sh "nix run github:tiiuae/sbomnix/${sbomnix_hexsha}#provenance -- ${flakeref} ${opts}"
+
+    path="${outdir}/provenance.json"
+    cert="INT-lenovo-x1-carbon-gen11-debug-x86-64-linux"
+    sigfile="${path}.sig"
+    sign_file(path, cert, sigfile)
 }
 
 def sbomnix(String tool, String flakeref) {
@@ -150,6 +155,15 @@ def find_img_relpath(String flakeref, String subdir) {
     println "Found flakeref '${flakeref}' image '${img_relpath}'"
   }
   return img_relpath
+}
+
+def sign_file(String path, String cert, String sigfile) {
+  println "sign_file: $path ### $cert ### sigfile"
+  res = sh(
+    script: """
+      nix run github:tiiuae/ci-yubi#sign -- --path=${path} --cert=${cert} --sigfile=${sigfile}
+    """, returnStdout: true).trim()
+    return res
 }
 
 def sign_relpath(String flakeref, String subdir) {
