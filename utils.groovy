@@ -176,7 +176,7 @@ def verify_signature(String path, String cert, String certfile) {
 }
 
 def sign_relpath(String flakeref, String subdir) {
-  relpath = find_img_relpath(flakeref, subdir)
+  relpath = "$subdir/find_img_relpath(flakeref, subdir)"
   signame = "${flakeref_trim(flakeref)}.sig"
   println "sign_relpath: signame: ${signame}"
   res = sign_file(relpath, "INT-lenovo-x1-carbon-gen11-debug-x86-64-linux", signame)
