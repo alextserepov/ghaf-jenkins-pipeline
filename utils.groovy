@@ -164,7 +164,7 @@ def sign_file(String path, String cert, String sigfile) {
     return res
 }
 
-def verify_signature(String path, String cert, String certfile) {
+def verify_signature(String path, String cert, String sigfile) {
   println "verify_signature: ${path} ### ${cert} ### ${sigfile}"
   res = sh(
     script: """
@@ -178,7 +178,7 @@ def sign_relpath(String flakeref, String subdir) {
   signame = "${flakeref_trim(flakeref)}.sig"
   println "sign_relpath: signame: ${signame}"
   res = sign_file(relpath, "INT-lenovo-x1-carbon-gen11-debug-x86-64-linux", signame)
-//  tst = verify_signature(relpath, "INT-lenovo-x1-carbon-gen11-debug-x86-64-linux", signame)
+  tst = verify_signature(relpath, "INT-lenovo-x1-carbon-gen11-debug-x86-64-linux", signame)
 //  res = sh(
 //    script: """
 //      nix run github:tiiuae/ci-yubi#sign -- --path=${subdir}/${relpath} --cert=INT-lenovo-x1-carbon-gen11-debug-x86-64-linux --sigfile=${signame}
