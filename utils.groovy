@@ -65,9 +65,7 @@ def nix_build(String flakeref, String subdir=null) {
     def spath = sh (script: "nix build ${flakeref} ${opts}", returnStdout: true).trim()
     println "Pre-Sign"
     sign_relpath(flakeref, subdir)
-    println "Post sign"
-//    sh (script: "nix run github:tiiuae/ci-yubi#sign -- --path=${spath} --cert=INT-lenovo-x1-carbon-gen11-debug-x86-64-linux --sigfile=mysig.bin")
-//    println "SPath Signed!"
+    println "SPath Signed!"
     // Store the build end time to job's environment
     epoch_seconds = (int) (new Date().getTime() / 1000l)
     env."END_${flakeref_trimmed}_${env.BUILD_TAG}" = epoch_seconds
@@ -158,7 +156,7 @@ def find_img_relpath(String flakeref, String subdir) {
 }
 
 def sign_file(String path, String cert, String sigfile) {
-  println "sign_file: $path ### $cert ### $sigfile"
+  println "sign_file: ${path} ### ${cert} ### ${sigfile}"
   res = sh(
     script: """
       nix run github:tiiuae/ci-yubi#sign -- --path=${path} --cert=${cert} --sigfile=${sigfile}
@@ -167,7 +165,7 @@ def sign_file(String path, String cert, String sigfile) {
 }
 
 def verify_signature(String path, String cert, String certfile) {
-  println "verify_signature: $path ### $cert ### $sigfile"
+  println "verify_signature: ${path} ### ${cert} ### ${sigfile}"
   res = sh(
     script: """
       nix run github:tiiuae/ci-yubi#verify -- --path=${path} --cert=${cert} --sigfile=${sigfile}
