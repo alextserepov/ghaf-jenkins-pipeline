@@ -55,42 +55,42 @@ pipeline {
         dir(WORKDIR) {
           script {
             utils.nix_build('.#packages.x86_64-linux.nvidia-jetson-orin-agx-debug-from-x86_64', 'archive')
-            utils.nix_build('.#packages.x86_64-linux.nvidia-jetson-orin-nx-debug-from-x86_64', 'archive')
-            utils.nix_build('.#packages.x86_64-linux.lenovo-x1-carbon-gen11-debug', 'archive')
-            utils.nix_build('.#packages.x86_64-linux.generic-x86_64-debug', 'archive')
-            utils.nix_build('.#packages.riscv64-linux.microchip-icicle-kit-debug', 'archive')
-            utils.nix_build('.#hydraJobs.nvidia-jetson-orin-agx-debug-bpmp-from-x86_64.x86_64-linux', 'archive')
-            utils.nix_build('.#hydraJobs.nvidia-jetson-orin-nx-debug-bpmp-from-x86_64.x86_64-linux', 'archive')
-            utils.nix_build('.#packages.x86_64-linux.doc')
+//            utils.nix_build('.#packages.x86_64-linux.nvidia-jetson-orin-nx-debug-from-x86_64', 'archive')
+//            utils.nix_build('.#packages.x86_64-linux.lenovo-x1-carbon-gen11-debug', 'archive')
+//            utils.nix_build('.#packages.x86_64-linux.generic-x86_64-debug', 'archive')
+//            utils.nix_build('.#packages.riscv64-linux.microchip-icicle-kit-debug', 'archive')
+//            utils.nix_build('.#hydraJobs.nvidia-jetson-orin-agx-debug-bpmp-from-x86_64.x86_64-linux', 'archive')
+//            utils.nix_build('.#hydraJobs.nvidia-jetson-orin-nx-debug-bpmp-from-x86_64.x86_64-linux', 'archive')
+//            utils.nix_build('.#packages.x86_64-linux.doc')
           }
         }
       }
     }
-    stage('Build aarch64') {
-      steps {
-        dir(WORKDIR) {
-          script {
-            utils.nix_build('.#packages.aarch64-linux.nxp-imx8mp-evk-debug', 'archive')
-            utils.nix_build('.#packages.aarch64-linux.nvidia-jetson-orin-agx-debug', 'archive')
-            utils.nix_build('.#packages.aarch64-linux.nvidia-jetson-orin-nx-debug', 'archive')
-            utils.nix_build('.#hydraJobs.nvidia-jetson-orin-agx-debug-bpmp.aarch64-linux', 'archive')
-            utils.nix_build('.#hydraJobs.nvidia-jetson-orin-nx-debug-bpmp.aarch64-linux', 'archive')
-            utils.nix_build('.#packages.aarch64-linux.doc')
-          }
-        }
-      }
-    }
+//    stage('Build aarch64') {
+//      steps {
+//        dir(WORKDIR) {
+//          script {
+//            utils.nix_build('.#packages.aarch64-linux.nxp-imx8mp-evk-debug', 'archive')
+//            utils.nix_build('.#packages.aarch64-linux.nvidia-jetson-orin-agx-debug', 'archive')
+//            utils.nix_build('.#packages.aarch64-linux.nvidia-jetson-orin-nx-debug', 'archive')
+//            utils.nix_build('.#hydraJobs.nvidia-jetson-orin-agx-debug-bpmp.aarch64-linux', 'archive')
+//            utils.nix_build('.#hydraJobs.nvidia-jetson-orin-nx-debug-bpmp.aarch64-linux', 'archive')
+//            utils.nix_build('.#packages.aarch64-linux.doc')
+//          }
+//        }
+//      }
+//    }
     stage('Provenance') {
       steps {
         dir(WORKDIR) {
           script {
             utils.sbomnix('provenance', '.#packages.x86_64-linux.nvidia-jetson-orin-agx-debug-from-x86_64')
-            utils.sbomnix('provenance', '.#packages.x86_64-linux.nvidia-jetson-orin-nx-debug-from-x86_64')
-            utils.sbomnix('provenance', '.#packages.x86_64-linux.lenovo-x1-carbon-gen11-debug')
-            utils.sbomnix('provenance', '.#packages.riscv64-linux.microchip-icicle-kit-debug')
-            utils.sbomnix('provenance', '.#packages.aarch64-linux.nxp-imx8mp-evk-debug')
-            utils.sbomnix('provenance', '.#packages.aarch64-linux.nvidia-jetson-orin-agx-debug')
-            utils.sbomnix('provenance', '.#packages.aarch64-linux.nvidia-jetson-orin-nx-debug')
+//            utils.sbomnix('provenance', '.#packages.x86_64-linux.nvidia-jetson-orin-nx-debug-from-x86_64')
+//            utils.sbomnix('provenance', '.#packages.x86_64-linux.lenovo-x1-carbon-gen11-debug')
+//            utils.sbomnix('provenance', '.#packages.riscv64-linux.microchip-icicle-kit-debug')
+//            utils.sbomnix('provenance', '.#packages.aarch64-linux.nxp-imx8mp-evk-debug')
+//            utils.sbomnix('provenance', '.#packages.aarch64-linux.nvidia-jetson-orin-agx-debug')
+//            utils.sbomnix('provenance', '.#packages.aarch64-linux.nvidia-jetson-orin-nx-debug')
           }
         }
       }
@@ -100,12 +100,12 @@ pipeline {
         dir(WORKDIR) {
           script {
             utils.sbomnix('sbomnix', '.#packages.x86_64-linux.nvidia-jetson-orin-agx-debug-from-x86_64')
-            utils.sbomnix('sbomnix', '.#packages.x86_64-linux.nvidia-jetson-orin-nx-debug-from-x86_64')
-            utils.sbomnix('sbomnix', '.#packages.x86_64-linux.lenovo-x1-carbon-gen11-debug')
-            utils.sbomnix('sbomnix', '.#packages.riscv64-linux.microchip-icicle-kit-debug')
-            utils.sbomnix('sbomnix', '.#packages.aarch64-linux.nxp-imx8mp-evk-debug')
-            utils.sbomnix('sbomnix', '.#packages.aarch64-linux.nvidia-jetson-orin-agx-debug')
-            utils.sbomnix('sbomnix', '.#packages.aarch64-linux.nvidia-jetson-orin-nx-debug')
+  //          utils.sbomnix('sbomnix', '.#packages.x86_64-linux.nvidia-jetson-orin-nx-debug-from-x86_64')
+  //          utils.sbomnix('sbomnix', '.#packages.x86_64-linux.lenovo-x1-carbon-gen11-debug')
+  //          utils.sbomnix('sbomnix', '.#packages.riscv64-linux.microchip-icicle-kit-debug')
+  //          utils.sbomnix('sbomnix', '.#packages.aarch64-linux.nxp-imx8mp-evk-debug')
+  //          utils.sbomnix('sbomnix', '.#packages.aarch64-linux.nvidia-jetson-orin-agx-debug')
+  //          utils.sbomnix('sbomnix', '.#packages.aarch64-linux.nvidia-jetson-orin-nx-debug')
           }
         }
       }
@@ -115,12 +115,12 @@ pipeline {
         dir(WORKDIR) {
           script {
             utils.sbomnix('vulnxscan', '.#packages.x86_64-linux.nvidia-jetson-orin-agx-debug-from-x86_64')
-            utils.sbomnix('vulnxscan', '.#packages.x86_64-linux.nvidia-jetson-orin-nx-debug-from-x86_64')
-            utils.sbomnix('vulnxscan', '.#packages.x86_64-linux.lenovo-x1-carbon-gen11-debug')
-            utils.sbomnix('vulnxscan', '.#packages.riscv64-linux.microchip-icicle-kit-debug')
-            utils.sbomnix('vulnxscan', '.#packages.aarch64-linux.nxp-imx8mp-evk-debug')
-            utils.sbomnix('vulnxscan', '.#packages.aarch64-linux.nvidia-jetson-orin-agx-debug')
-            utils.sbomnix('vulnxscan', '.#packages.aarch64-linux.nvidia-jetson-orin-nx-debug')
+  //          utils.sbomnix('vulnxscan', '.#packages.x86_64-linux.nvidia-jetson-orin-nx-debug-from-x86_64')
+  //          utils.sbomnix('vulnxscan', '.#packages.x86_64-linux.lenovo-x1-carbon-gen11-debug')
+  //          utils.sbomnix('vulnxscan', '.#packages.riscv64-linux.microchip-icicle-kit-debug')
+  //          utils.sbomnix('vulnxscan', '.#packages.aarch64-linux.nxp-imx8mp-evk-debug')
+  //          utils.sbomnix('vulnxscan', '.#packages.aarch64-linux.nvidia-jetson-orin-agx-debug')
+  //          utils.sbomnix('vulnxscan', '.#packages.aarch64-linux.nvidia-jetson-orin-nx-debug')
           }
         }
       }

@@ -62,7 +62,10 @@ def nix_build(String flakeref, String subdir=null) {
     // Store the build start time to job's environment
     epoch_seconds = (int) (new Date().getTime() / 1000l)
     env."BEG_${flakeref_trimmed}_${env.BUILD_TAG}" = epoch_seconds
-    sh "nix build ${flakeref} ${opts}"
+    def spath = sh (script: "nix build ${flakeref} ${opts}", returnStdout: true).trim()
+    println "Pre-Sign"
+    sign_relpath(flakeref, subdir)
+    println "SPath Signed!"
     // Store the build end time to job's environment
     epoch_seconds = (int) (new Date().getTime() / 1000l)
     env."END_${flakeref_trimmed}_${env.BUILD_TAG}" = epoch_seconds
@@ -106,6 +109,11 @@ def provenance(String flakeref, String outdir, String flakeref_trimmed) {
     """
     opts = "--recursive --out ${outdir}/provenance.json"
     sh "nix run github:tiiuae/sbomnix/${sbomnix_hexsha}#provenance -- ${flakeref} ${opts}"
+
+    path="${outdir}/provenance.json"
+    cert="INT-lenovo-x1-carbon-gen11-debug-x86-64-linux"
+    sigfile="${path}.sig"
+    sign_file(path, cert, sigfile)
 }
 
 def sbomnix(String tool, String flakeref) {
@@ -145,6 +153,33 @@ def find_img_relpath(String flakeref, String subdir) {
     println "Found flakeref '${flakeref}' image '${img_relpath}'"
   }
   return img_relpath
+}
+
+def sign_file(String path, String cert, String sigfile) {
+  println "sign_file: ${path} ### ${cert} ### ${sigfile}"
+  res = sh(
+    script: """
+      nix run github:tiiuae/ci-yubi#sign -- --path=${path} --cert=${cert} --sigfile=${sigfile}
+    """, returnStdout: true).trim()
+    return res
+}
+
+def verify_signature(String path, String cert, String sigfile) {
+  println "verify_signature: ${path} ### ${cert} ### ${sigfile}"
+  res = sh(
+    script: """
+      nix run github:tiiuae/ci-yubi#verify -- --path=${path} --cert=${cert} --sigfile=${sigfile}
+    """, returnStdout: true).trim()
+  return res
+}
+
+def sign_relpath(String flakeref, String subdir) {
+  relpath = "$subdir/${find_img_relpath(flakeref, subdir)}"
+  signame = "${subdir}/${flakeref_trim(flakeref)}.sig"
+  println "sign_relpath: signame: ${signame}"
+  res = sign_file(relpath, "INT-lenovo-x1-carbon-gen11-debug-x86-64-linux", signame)
+  tst = verify_signature(relpath, "INT-lenovo-x1-carbon-gen11-debug-x86-64-linux", signame)
+  return res
 }
 
 def boot_test(String flakeref, String device_config, String jenkins_url, String subdir='archive') {
