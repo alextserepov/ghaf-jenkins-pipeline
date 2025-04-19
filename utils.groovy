@@ -63,6 +63,17 @@ def nix_build(String flakeref, String subdir=null) {
     epoch_seconds = (int) (new Date().getTime() / 1000l)
     env."BEG_${flakeref_trimmed}_${env.BUILD_TAG}" = epoch_seconds
     sh "nix build ${flakeref} ${opts}"
+    // If the build result is an image, produce a signature file
+    img_relpath = subdir ? find_img_relpath(flakeref, subdir, abort_on_error='false') : ""
+    if (img_relpath) {
+      target_path = "${subdir}/${img_relpath}"
+      sig_path = "sig/${img_relpath}.sig"
+      sign_file(target_path, sig_path)
+      // Archive signature file alongside the target image
+      archive_artifacts("sig")
+    } else {
+      println "Build result is not an image, skipping image signing"
+    }
     // Store the build end time to job's environment
     epoch_seconds = (int) (new Date().getTime() / 1000l)
     env."END_${flakeref_trimmed}_${env.BUILD_TAG}" = epoch_seconds
@@ -106,6 +117,9 @@ def provenance(String flakeref, String outdir, String flakeref_trimmed) {
     """
     opts = "--recursive --out ${outdir}/provenance.json"
     sh "provenance ${flakeref} ${opts}"
+    // Sign the provenance
+    target_path = "${outdir}/provenance.json"
+    sign_file(target_path, "${target_path}.sig")
 }
 
 def sbomnix(String tool, String flakeref) {
@@ -129,7 +143,7 @@ def sbomnix(String tool, String flakeref) {
   archive_artifacts("scs")
 }
 
-def find_img_relpath(String flakeref, String subdir) {
+def find_img_relpath(String flakeref, String subdir, String abort_on_error="true") {
   flakeref_trimmed = "${flakeref_trim(flakeref)}"
   img_relpath = sh(
     script: """
@@ -137,13 +151,27 @@ def find_img_relpath(String flakeref, String subdir) {
       find -L ${flakeref_trimmed} -regex '.*\\.\\(img\\|raw\\|zst\\|iso\\)\$' -print -quit
     """, returnStdout: true).trim()
   if (!img_relpath) {
-    // Error out stopping the pipeline execution if image was not found
-    println "Error: no image found from '${subdir}/${flakeref_trimmed}'"
-    sh "exit 1"
+    println "Warning: no image found from '${subdir}/${flakeref_trimmed}'"
+    // Error out stopping the pipeline execution if abort_on_error was set
+    sh "if [ '${abort_on_error}' = 'true' ]; then exit 1; fi"
   } else {
     println "Found flakeref '${flakeref}' image '${img_relpath}'"
   }
   return img_relpath
+}
+
+def sign_file(String path, String sigfile, String cert="INT-Ghaf-Devenv-Common") {
+  println "sign_file: ${path} ### ${cert} ### ${sigfile}"
+  try {
+    sh(
+      // See the 'sign' command at: https://github.com/tiiuae/ci-yubi
+      script: """
+        mkdir -p \$(dirname '${sigfile}') || true
+        sign --path=${path} --cert=${cert} --sigfile=${sigfile}
+    """, returnStdout: true).trim()
+  } catch (Exception e) {
+    println "Warning: signing failed: sigfile will not be generated for: ${path}"
+  }
 }
 
 def ghaf_hw_test(String flakeref, String device_config, String jenkins_url, String testset='_boot_') {
